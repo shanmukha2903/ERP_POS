@@ -1,0 +1,400 @@
+{
+    "suite_name": "POS Payment Suite",
+    "scenarios": [
+        {
+            "name": "Product Selection Scenarios",
+            "test_cases": [
+                {
+                    "name": "TC_002_Select_Random_Products",
+                    "steps": [
+                        {"action": "select_random_products"}
+                    ]
+                },
+                {
+                    "name": "TC_003_Delete_Two_Products",
+                    "steps": [
+                        {"action": "delete_two_products"}
+                    ]
+                },
+                {
+                    "name": "TC_004_press_plus_key",
+                    "steps":[
+                        { "action": "press_plus_key"}
+
+                    ]
+                },
+                {
+                    "name": "TC_005_press_minus_key",
+                    "steps": [
+                        {"action": "press_minus_key"}
+                    ]
+                },
+                {
+                    "name": "TC_006_refresh",
+                    "steps": [
+                        {"action": "refresh_page"}
+                    ]
+                }
+
+            ]
+        },
+        {
+            "name": "Full Payment Scenarios",
+            "test_cases": [
+                {
+                    "name": "TC_007_Cash_Full_Payment",
+                    "steps": [
+                        {"action": "select_random_products"},
+                        {"action": "cash_payment_full"}
+                    ]
+                },
+                {
+                    "name": "TC_008_UPI_Full_Payment",
+                    "steps": [
+                        {"action": "select_random_products"},
+                        {"action": "upi_payment_full"}
+                    ]
+                },
+                {
+                    "name": "TC_009_Card_Full_Payment",
+                    "steps": [
+                        {"action": "select_random_products"},
+                        {"action": "card_payment_full"}
+                    ]
+                },
+                {
+                    "name": "TC_010_Razor_Full_Payment",
+                    "steps": [
+                        {"action": "select_random_products"},
+                        {"action": "razor_payment_full"}
+                    ]
+                },
+                {
+                    "name": "TC_011_refresh",
+                    "steps": [
+                        {"action": "refresh_page"}
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Partial Payment Scenarios",
+            "test_cases": [
+                {
+                    "name": "TC_012_Cash_Card_Partial",
+                    "steps": [
+                        {"action": "select_random_products"},
+                        {"action": "cash_payment_partial_dynamic"},
+                        {"action": "card_remaining_partial"}
+                    ]
+                },
+                {
+                    "name": "TC_013_Cash_UPI_Partial",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "cash_payment_partial_dynamic"},
+                        {"action": "upi_remaining_partial"}
+                    ]
+                },
+                {
+                    "name": "TC_014_Cash_Razor_Partial",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "cash_payment_partial_dynamic"},
+                        {"action": "razor_remaining_partial"}
+                    ]
+                },
+                {
+                    "name": "Tc_015_delect_partial_amount",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "cash_payment_partial_dynamic"},
+                        {"action":  "delect_partial_amount_cash"}
+                    ]
+                }
+
+            ]
+        },
+        {
+            "name": "Third Party Payment Scenarios",
+            "test_cases": [
+                {
+                    "name": "TC_016_Swiggy_Payment",
+                    "steps": [
+                        {"action": "sale_type_swiggy"},
+                        {"action": "product_drawer"},
+                        {"action": "swiggy_payment"}
+                    ]
+                },
+                {
+                    "name": "TC_017_Zomato_Payment",
+                    "steps": [
+                        {"action": "sale_type_zomato"},
+                        {"action": "product_drawer"},
+                        {"action": "zomato_payment"}
+                    ]
+                },
+                {
+                    "name": "TC_018_Online_payment",
+                    "steps": [
+                        {"action": "sale_type_online"},
+                        {"acction": "product_drawer"},
+                        {"action": "Online_payment"}
+                    ]
+                }
+
+
+
+
+
+            ]
+        },
+        {
+            "name": "Customer create",
+            "test_case": [
+                {
+                    "name": "TC_19_C_C_P",
+                    "steps":[
+                        {"action": "create_customer"},
+                        {"action": "product_drawer"},
+                        {"action": "cash_payment_full"}
+                    ]
+
+                },
+                {
+                    "name": "TC_20_C_C_P",
+                    "steps":[
+                        {"action": "create_customer"},
+                        {"action": "product_drawer"},
+                        {"action": "card_payment_full"}
+                    ]
+
+                },
+                {
+                    "name": "TC_21_C_C_P",
+                    "steps":[
+                        {"action": "create_customer"},
+                        {"action": "product_drawer"},
+                        {"action": "upi_payment_full"}
+                    ]
+
+                },
+                {
+                    "name": "TC_22_C_R_P",
+                    "steps": [
+                        {"action": "create_customer"},
+                        {"action": "refresh_page"},
+                        {"action": "product_drawer"}
+
+                    ]
+                },
+                {
+                    "name": "TC_23_C_R_P",
+                    "steps": [
+                        {"action": "razor_payment_full"}
+
+                    ]
+                }
+
+
+            ]
+        },
+        {
+            "name": "Parked Bill",
+            "test_case": [
+                {
+                    "name": "TC_024_product_moved_parked_bill",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"}
+                    ]
+                },
+                {
+                    "name": "TC_25_Retrevial_order",
+                    "steps": [
+                        {"action": "parked_bills"}
+
+                    ]
+                },
+                {
+                    "name": "TC_26_Complete_the_payment",
+                    "steps": [
+                        {"action": "card_payment_full"}
+                    ]
+
+                },
+                {
+                    "name": "TC_27_move_parked_bill",
+                    "steps": [
+                        {"action":"product_drawer" },
+                        {"action":"hold_parked"}
+                    ]
+                },
+                {
+                    "name": "TC_28_Discard_the_bill",
+                    "steps": [
+                        {"action": "parked_bills_discard"}
+                    ]
+                },
+                {
+                    "name": "TC_29_Refresh_page_after_product_move_parked_bill",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"},
+                        {"action": "refresh_page"}
+                    ]
+                },
+                {
+                    "name": "TC_30_Pay_partial_amount_move_parked",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action":"cash_payment_partial_dynamic"},
+                        {"action": "hold_parked"}
+                    ]
+                },
+                {
+                    "name": "TC_31_retravial_the_partial_payment",
+                    "steps": [
+                        {"action": "parked_bills"}
+
+                    ]
+                },
+                {
+                    "name": "TC_32_complete_the_retravial_partial_amount",
+                    "steps": [
+                        {"action":"card_payment_full"}
+                    ]
+                },
+                {
+                    "name": "TC_33_Replace_the_parked",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"},
+                        {"action": "product_drawer"},
+                        {"action": "replace_parked_bills"},
+                        {"action": "card_payment_full"}
+
+
+
+                    ]
+                },
+                {
+                    "name": "TC_34_Modify_after_retrevail",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"},
+                        {"action": "parked_bills"},
+                        {"action": "select_random_products"},
+                        {"action": "card_payment_full"}
+                    ]
+                },
+                {
+                    "name": "TC_35_Complete_sale_when_order_in_parked",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"},
+                        {"action":"product_drawer"},
+                        {"action": "card_payment_full"},
+                        {"action": "select_random_products"},
+                        {"action": "upi_payment_full"}
+
+                    ]
+                },
+
+                {
+                    "name": "TC_36_crete_customer_after_retrevel",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"},
+                        {"action": "parked_bills"},
+                        {"action": "create_customer"},
+                        {"action": "upi_payment_full"}
+                    ]
+                },
+                {
+                    "name": "TC_37_double_time_move_parked_bill",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"},
+                        {"action": "parked_bills"},
+                        {"action": "hold_parked"},
+                        {"action": "parked_bills"},
+                        {"action": "upi_payment_full"}
+
+                    ]
+                },
+                {
+                    "name": "TC_38_cancel_parked_bill",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "hold_parked"},
+                        {"action": "parked_bills"},
+                        {"action": "cancel_product"}
+                    ]
+                },
+                {
+                    "name":"TC_39_discard_all_parked_bill",
+                    "steps":[
+                        {"action": "parked_bills_discard_all"}
+                    ]
+                }
+
+
+
+
+
+
+
+
+            ]
+        },
+        {
+            "name": "Full_sync",
+            "test_case": [
+                {
+                    "name ": "TC_040_full_sync_pos",
+                    "steps": [
+                        {"action": "full_sync"}
+                    ]
+                },
+                {
+                    "name": "TC_41_full_with products",
+                    "steps": [
+                        {"action":"product_drawer"},
+                        {"action": ""}
+                    ]
+                }
+
+            ]        },
+
+        {
+            "name": "Logout  scanerio",
+            "test_case":[
+                {
+                    "name" : "TC_013_logout",
+                    "steps": [
+                        {"action": "product_drawer"},
+                        {"action": "cash_payment_full"},
+                        {"action":  "log_out"}
+
+                    ]
+                }
+            ]
+
+        }
+
+    ],
+    "sample_data": {
+        "till_name": "{{ till_name }}"
+    },
+    "server_details": {
+        "base_url": "https://pos.example.com"
+    },
+    "test_data": {
+        "url": "https://pos.example.com",
+        "username": "testuser",
+        "password": "testpass",
+        "till_name": "Automation",
+        "product_codes": ["PROD001", "PROD002", "PROD003", "PROD004", "PROD005"]
+    }
+}
