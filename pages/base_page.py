@@ -41,6 +41,12 @@ class BasePage:
         logger.info(f"Got text from {selector}: {text}")
         return text
 
+    def press_enter(self, selector):
+        """Press the Enter key on an element identified by the given selector."""
+        self.page.wait_for_selector(selector, state="visible")
+        self.page.press(selector, "Enter")
+        logger.info(f"Pressed Enter on element: {selector}")
+
     def get_value(self, selector):
         self.page.wait_for_selector(selector)
         return self.page.input_value(selector)

@@ -975,7 +975,7 @@ class POSPage(BasePage):
             self.click_element(
                 '//button[@style="background-color: rgb(47, 56, 86); color: rgb(255, 255, 255); width: 8vw; height: 6.5vh; border-radius: 5px; margin-right: 1vw;"]')
             self.click_element('//span[text()="Submit"]')
-            
+
     def custom_boxes_delect_product(self):
         self.click_element('//span[@class="anticon anticon-code-sandbox"]')
         delete_buttons = self.page.locator('//img[contains(@src, "delete1.eaf8a42c.svg")]')
