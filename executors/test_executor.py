@@ -123,7 +123,12 @@ class TestExecutor:
             "custom_box": lambda :pos_page.custom_box(),
             "custom_boxes": lambda :pos_page.custom_boxes(),
             "custom_boxes_delect_product": lambda :pos_page.custom_boxes_delect_product(),
-            "custom_mix_qty_change": lambda :pos_page.custom_mix_qty_change()
+            "custom_mix_qty_change": lambda :pos_page.custom_mix_qty_change(),
+            "cash_payment_full_dynamic_round_off":lambda :pos_page.cash_payment_full_dynamic_round_off(),
+            "validate_cash_sale_amount_and_continue":lambda :pos_page.validate_cash_sale_amount_and_continue(),
+            "ofc_purpose_cash_sale_validation":lambda :pos_page.ofc_purpose_cash_sale_validation(),
+            "click_random_product":lambda :pos_page.click_random_product(),
+            "ofc_validation_discount":lambda :pos_page.ofc_validation_discount()
 
 
 

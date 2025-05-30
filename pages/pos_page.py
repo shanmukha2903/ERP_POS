@@ -8,6 +8,7 @@ import random
 import time
 from faker import Faker
 import  re
+import unicodedata
 
 from pages.login_page import LoginPage
 from utils.data_reader import DataReader
@@ -26,10 +27,12 @@ class POSPage(BasePage):
         self.data_reader = data_reader
         self.order_ids = []
         self.context = page.context
+        self.cash_order_totals = []
 
     def select_till(self, till_name):
         xpath_till = f"//span[text()='{till_name}']"
         self.click_element(xpath_till)
+        self.page.wait_for_selector("//span[text()='Next']", timeout=1600000)
         self.click_element("//span[text()='Next']")
         logger.info(f"Selected till: {till_name}")
 
@@ -713,9 +716,7 @@ class POSPage(BasePage):
     def log_out_validation(self):
         self.click_element('//img[@style="padding-left: 1rem; height: 2vw;"]')
         self.click_element("//span[text() = 'Logout']")
-        self.click_element("//span[text() = 'Next']")
         # self.click_element("//span[text() = 'Next']")
-        # self.click_element("//span[text() = 'Close Shift']")
         logger.info(f"log_out: {name}")
 
     def nan_validation(self):
@@ -1027,6 +1028,146 @@ class POSPage(BasePage):
         self.click_element(f"(//tr[contains(@class, 'ant-table-row-level-1')])[{product_index}]")
         self.page.keyboard.press('+')
 
+
+
+########################################OFC######################################################################
+
+    def cash_payment_full_dynamic_round_off(self):
+        total_amount_text = self.page.inner_text("//p[text()='Total Amount To Pay']/following-sibling::p")
+        total_amount = float(total_amount_text.replace("₹", "").strip())
+        # Store original amount
+        self.cash_order_totals.append(total_amount)
+        # Print in console
+        print(f"[Order Paid] Total Amount To Pay (Before Round Off): ₹{total_amount}")
+        # Round and pay
+        rounded_amount = math.ceil(total_amount)
+        self.click_element("//p[text()='Total Amount To Pay']")
+        self.click_element("//span[text()='Cash']")
+        self.fill_text("//input[@placeholder='Enter Amount']", str(rounded_amount))
+        self.click_element("(//button[contains(text(), 'Enter')])[2]")
+
+    def validate_cash_sale_amount_and_continue(self):
+        total_paid = round(sum(self.cash_order_totals), 2)
+        print(f"🔄 Total Sum of All Orders Paid: ₹{total_paid}")
+
+        # Correct XPath for readonly input
+        raw_value = self.page.get_attribute(
+            "//p[text()='Cash Sale Amount']/following::input[@class='ant-input transactionAmtInput'][1]",
+            "value"
+        )
+        print(f"🧾 Raw Field Value: {raw_value}")
+
+        # ✅ Extract float from mixed currency string
+        import re
+        match = re.search(r"(\d+\.\d+)", raw_value)
+        if match:
+            clean_value = match.group(1)
+            sale_amount = float(clean_value)
+        else:
+            print(f"❌ Couldn't extract float from: '{raw_value}'")
+            self.page.context.close()
+            return
+
+        if round(sale_amount, 2) == total_paid:
+            print("✅ Match! Clicking Next.")
+        else:
+            print(f"❌ Mismatch: Expected ₹{total_paid}, got ₹{sale_amount}")
+            self.page.context.close()
+    def ofc_purpose_cash_sale_validation(self):
+        self.click_element("//span[text() = 'Next']")
+
+    def click_random_product(self):
+        # Locate all product rows
+        product_rows = self.page.locator(
+            "//tr[contains(@class, 'ant-table-row') and contains(@class, 'ant-table-row-level-0')]")
+
+        # Count how many rows are present
+        count = product_rows.count()
+        print(f"Found {count} products")
+
+        if count == 0:
+            print("❌ No products found to click")
+            return
+
+        # Choose a random row index
+        random_index = random.randint(0, count - 1)
+        print(f"Clicking on product row index: {random_index + 1}")
+
+        # Click on the randomly selected row
+        product_rows.nth(random_index).click()
+
+    def ofc_validation_discount(self):
+        from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+        import logging
+        import re
+
+        logger = logging.getLogger(__name__)
+
+        try:
+            # Wait for invoice table rows to be visible
+            self.page.wait_for_selector("//tr[contains(@class, 'ant-table-row')]", state="visible", timeout=10000)
+
+            # Extract all rows
+            rows = self.page.locator("//tr[contains(@class, 'ant-table-row')]").all()
+            if not rows:
+                logger.error("No products found in the invoice table")
+                raise Exception("No products found in the invoice table")
+
+            logger.info(f"Found {len(rows)} products in the invoice table")
+
+            # Extract and validate each product
+            def get_float_value(locator, default=0.0):
+                try:
+                    text = locator.inner_text(timeout=5000).strip()
+                    # Remove all non-numeric characters except the first dot
+                    cleaned_text = re.sub(r'[^\d.]', '', text)
+                    cleaned_text = re.sub(r'\.+', '.', cleaned_text)
+                    cleaned_text = cleaned_text.rstrip('.')
+                    return float(cleaned_text) if cleaned_text and cleaned_text != '.' else default
+                except (PlaywrightTimeoutError, ValueError) as e:
+                    logger.warning(f"Failed to extract value: {e}")
+                    return default
+
+            is_valid = True
+            for i, row in enumerate(rows, 1):
+                quantity = get_float_value(row.locator("td:nth-child(2)"), default=1.0)
+                price = get_float_value(row.locator("td:nth-child(5)"), default=0.0)
+                discount = get_float_value(row.locator("td:nth-child(3)"), default=0.0)
+                total = get_float_value(row.locator("td:nth-child(6)"), default=0.0)
+
+                # Calculate expected discount and total for 20% discount
+                total_price = price * quantity
+                expected_discount = round(total_price * 0.20, 2)
+                expected_total = round(total_price - expected_discount, 2)
+
+                # Log all values in the requested format
+                logger.info(f"Product {i}: Quantity: {quantity}, Price: {price}, "
+                            f"Expected Discount: {expected_discount}, Discount: {discount}, "
+                            f"Expected Total: {expected_total}, Total: {total}")
+
+                # Validate discount and total
+                if abs(discount - expected_discount) > 0.01 or abs(total - expected_total) > 0.01:
+                    logger.error(f"Product {i} - Discount validation failed. "
+                                 f"Expected Discount: {expected_discount:.2f}, Actual Discount: {discount:.2f}, "
+                                 f"Expected Total: {expected_total:.2f}, Actual Total: {total:.2f}")
+                    is_valid = False
+                else:
+                    logger.info(f"Product {i} - Discount validation passed")
+
+            # Take screenshot if validation fails
+            if not is_valid:
+                self.page.screenshot(path="discount_validation_error.png")
+                logger.info("Screenshot saved as discount_validation_error.png")
+                raise Exception("Discount validation failed for one or more products")
+            else:
+                logger.info("Discount validation passed successfully for all products")
+
+        except Exception as e:
+            logger.error(f"Error in ofc_validation_discount: {e}")
+            if self.page and not self.page.is_closed():
+                self.page.screenshot(path="error_screenshot.png")
+                logger.info("Screenshot saved as error_screenshot.png")
+            raise
 
 
 
